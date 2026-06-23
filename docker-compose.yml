@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VAPI_PRIVATE_KEY=${VAPI_PRIVATE_KEY}
+    depends_on:
+      - mongodb
+    env_file:
+      - ./backend/.env
+
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

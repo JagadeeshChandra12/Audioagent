@@ -1,0 +1,43 @@
+services:
+  # 1. Backend Service (FastAPI)
+  - type: web
+    name: audioagent-backend
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    plan: free
+    # We point to the backend subdirectory
+    rootDir: backend
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: DB_NAME
+        value: audioagent
+      - key: MONGODB_URL
+        sync: false
+        placeholder: "mongodb+srv://<username>:<password>@cluster.xxxx.mongodb.net/?retryWrites=true&w=majority"
+      - key: VAPI_PRIVATE_KEY
+        sync: false
+        placeholder: "Your Vapi Private Key"
+      - key: VAPI_PUBLIC_KEY
+        sync: false
+        placeholder: "Your Vapi Public Key"
+      - key: VAPI_PHONE_NUMBER_ID
+        sync: false
+        placeholder: "Your Vapi Phone Number ID"
+      - key: OPENAI_API_KEY
+        sync: false
+        placeholder: "Your OpenAI API Key"
+
+  # 2. Frontend Static Site (React/Vite)
+  - type: static
+    name: audioagent-frontend
+    env: static
+    buildCommand: npm run build
+    publishDir: dist
+    plan: free
+    rootDir: audioagent
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+        placeholder: "https://audioagent-backend.onrender.com"
